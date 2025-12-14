@@ -9,19 +9,19 @@ Game Rules
 
 The secret number:
 
-has exactly 4 digits
+  -has exactly 4 digits
 
-contains unique digits (no duplicates)
+  -contains unique digits (no duplicates)
 
-does not start with zero
+  -does not start with zero (0)
 
 A bull means:
 
-correct digit in the correct position
+ -correct digit in the correct position
 
 A cow means:
 
-correct digit but in the wrong position
+ -correct digit but in the wrong position
 
 bull positions are never counted as cows
 
