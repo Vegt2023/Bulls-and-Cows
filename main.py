@@ -51,13 +51,19 @@ def plural(n: int, singular: str, plural_word: str | None = None) -> str:
     return f"{n} {word}"
 
 
-def play_round() -> None:
-    """Play one round of the game until the user guesses the secret."""
+def play_round() -> int:
+    """Play one round and return number of guesses."""
     secret = generate_secret()
     guesses = 0
 
     while True:
         tip = input(">>> ").strip()
+        
+        # DEV
+        if tip == "__dev__":
+            print(f"[DEV] Secret number is: {secret}")
+            continue
+
         ok, msg = validate_guess(tip)
 
         if not ok:
@@ -72,17 +78,29 @@ def play_round() -> None:
             print(f"in {guesses} guesses!")
             print("-----------------------------------------------")
             print("That's amazing!")
-            return
+            return guesses
 
         print(f"{plural(bulls, 'bull')}, {plural(cows, 'cow')}")
         print("-----------------------------------------------")
 
 
+
 def main() -> None:
-    """Main entry point. Handles intro and optional replay."""
+    """Main entry point. Stores game statistics."""
+    stats: list[int] = []
+
     while True:
         print_intro()
-        play_round()
+        guesses = play_round()
+        stats.append(guesses)
+
+        print("-----------------------------------------------")
+        print("Game statistics:")
+        for i, g in enumerate(stats, start=1):
+            print(f"Game {i}: {g} guesses")
+        avg = sum(stats) / len(stats)
+        print(f"Average guesses: {avg:.2f}")
+
         again = input("Play again? (y/n): ").strip().lower()
         if again not in ("y", "yes"):
             break
