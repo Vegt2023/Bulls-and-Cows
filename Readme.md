@@ -66,7 +66,7 @@ Game statistics (number of guesses per game)
 
 Optional hidden developer command:
 
-__dev__
+"__dev__" without "
 
 
 Displays the secret number (does not count as a guess)
