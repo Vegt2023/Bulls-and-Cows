@@ -1,4 +1,5 @@
 import random
+import time
 
 
 INTRO = """Hi there!
@@ -51,14 +52,15 @@ def plural(n: int, singular: str, plural_word: str | None = None) -> str:
     return f"{n} {word}"
 
 
-def play_round() -> int:
-    """Play one round and return number of guesses."""
+def play_round() -> tuple[int, float]:
+    """Play one round and return number of guesses and elapsed time."""
     secret = generate_secret()
     guesses = 0
+    start_time = time.time()
 
     while True:
         tip = input(">>> ").strip()
-        
+
         # DEV
         if tip == "__dev__":
             print(f"[DEV] Secret number is: {secret}")
@@ -74,11 +76,12 @@ def play_round() -> int:
         bulls, cows = count_bulls_cows(secret, tip)
 
         if tip == secret:
+            elapsed = time.time() - start_time
             print("Correct, you've guessed the right number")
             print(f"in {guesses} guesses!")
             print("-----------------------------------------------")
             print("That's amazing!")
-            return guesses
+            return guesses, elapsed
 
         print(f"{plural(bulls, 'bull')}, {plural(cows, 'cow')}")
         print("-----------------------------------------------")
@@ -87,19 +90,22 @@ def play_round() -> int:
 
 def main() -> None:
     """Main entry point. Stores game statistics."""
-    stats: list[int] = []
+    stats: list[tuple[int, float]] = []
 
     while True:
         print_intro()
-        guesses = play_round()
-        stats.append(guesses)
+        guesses, elapsed = play_round()
+        stats.append((guesses, elapsed))
 
         print("-----------------------------------------------")
         print("Game statistics:")
-        for i, g in enumerate(stats, start=1):
-            print(f"Game {i}: {g} guesses")
-        avg = sum(stats) / len(stats)
-        print(f"Average guesses: {avg:.2f}")
+        for i, (g, t) in enumerate(stats, start=1):
+            print(f"Game {i}: {g} guesses, {t:.1f} seconds")
+
+        avg_guesses = sum(g for g, _ in stats) / len(stats)
+        avg_time = sum(t for _, t in stats) / len(stats)
+        print(f"Average guesses: {avg_guesses:.2f}")
+        print(f"Average time: {avg_time:.1f} seconds")
 
         again = input("Play again? (y/n): ").strip().lower()
         if again not in ("y", "yes"):
